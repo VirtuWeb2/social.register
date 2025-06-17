@@ -1,5 +1,5 @@
 // Configuração da API
-const API_BASE_URL = 'http://ugsbrasil.com.br/social/api';
+const API_BASE_URL = 'https://ugsbrasil.com.br/api';
 
 // Estado global da aplicação
 let currentUser = null;
