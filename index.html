@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gerenciamento de Postagens</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div id="loginScreen" class="screen active">
+        <div class="login-container">
+            <div class="login-card">
+                <h1>Sistema de Postagens</h1>
+                <p>Faça login para acessar o sistema</p>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">Usuário:</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Senha:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                </form>
+                <div id="loginError" class="error-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Painel do Funcionário -->
+    <div id="employeeScreen" class="screen">
+        <header class="header">
+            <div class="header-content">
+                <h1>Painel do Funcionário</h1>
+                <div class="user-info">
+                    <span id="employeeUsername"></span>
+                    <button id="logoutBtn" class="btn btn-secondary">Sair</button>
+                </div>
+            </div>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="posts">Postagens</button>
+            <button class="nav-tab" data-tab="shares">Compartilhamentos</button>
+            <button class="nav-tab" data-tab="goals">Metas</button>
+            <button class="nav-tab" data-tab="reports">Relatórios</button>
+        </nav>
+
+        <main class="main-content">
+            <!-- Aba de Postagens -->
+            <div id="postsTab" class="tab-content active">
+                <div class="content-header">
+                    <h2>Minhas Postagens</h2>
+                    <button id="addPostBtn" class="btn btn-primary">Nova Postagem</button>
+                </div>
+                
+                <div id="postForm" class="form-container hidden">
+                    <h3 id="postFormTitle">Nova Postagem</h3>
+                    <form id="postFormElement">
+                        <input type="hidden" id="postId">
+                        <div class="form-group">
+                            <label for="postContent">Conteúdo:</label>
+                            <textarea id="postContent" name="content" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="postDate">Data:</label>
+                            <input type="date" id="postDate" name="post_date" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <button type="button" id="cancelPostBtn" class="btn btn-secondary">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="postsList" class="posts-list"></div>
+            </div>
+
+            <!-- Aba de Compartilhamentos -->
+            <div id="sharesTab" class="tab-content">
+                <div class="content-header">
+                    <h2>Compartilhamentos</h2>
+                    <button id="addShareBtn" class="btn btn-primary">Registrar Compartilhamento</button>
+                </div>
+                
+                <div id="shareForm" class="form-container hidden">
+                    <h3>Registrar Compartilhamento</h3>
+                    <form id="shareFormElement">
+                        <div class="form-group">
+                            <label for="originalPost">Postagem Original:</label>
+                            <select id="originalPost" name="original_post_id" required>
+                                <option value="">Selecione uma postagem</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sharesCount">Quantidade de Compartilhamentos:</label>
+                            <input type="number" id="sharesCount" name="shares_count" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="shareDate">Data:</label>
+                            <input type="date" id="shareDate" name="post_date" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Registrar</button>
+                            <button type="button" id="cancelShareBtn" class="btn btn-secondary">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="sharesList" class="posts-list"></div>
+            </div>
+
+            <!-- Aba de Metas -->
+            <div id="goalsTab" class="tab-content">
+                <h2>Minhas Metas</h2>
+                <div id="goalsCarousel" class="goals-carousel"></div>
+            </div>
+
+            <!-- Aba de Relatórios -->
+            <div id="reportsTab" class="tab-content">
+                <h2>Meus Relatórios</h2>
+                <div class="report-filters">
+                    <select id="reportPeriod">
+                        <option value="daily">Diário</option>
+                        <option value="weekly">Semanal</option>
+                        <option value="monthly">Mensal</option>
+                    </select>
+                    <button id="generateReportBtn" class="btn btn-primary">Gerar Relatório</button>
+                </div>
+                <div id="reportContent" class="report-content"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Painel do Administrador -->
+    <div id="adminScreen" class="screen">
+        <header class="header">
+            <div class="header-content">
+                <h1>Painel do Administrador</h1>
+                <div class="user-info">
+                    <span id="adminUsername"></span>
+                    <button id="adminLogoutBtn" class="btn btn-secondary">Sair</button>
+                </div>
+            </div>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="users">Usuários</button>
+            <button class="nav-tab" data-tab="adminGoals">Metas</button>
+            <button class="nav-tab" data-tab="adminReports">Relatórios</button>
+            <button class="nav-tab" data-tab="ranking">Ranking</button>
+        </nav>
+
+        <main class="main-content">
+            <!-- Aba de Usuários -->
+            <div id="usersTab" class="tab-content active">
+                <div class="content-header">
+                    <h2>Gestão de Usuários</h2>
+                    <button id="addUserBtn" class="btn btn-primary">Novo Usuário</button>
+                </div>
+                
+                <div id="userForm" class="form-container hidden">
+                    <h3 id="userFormTitle">Novo Usuário</h3>
+                    <form id="userFormElement">
+                        <input type="hidden" id="userId">
+                        <div class="form-group">
+                            <label for="userUsername">Usuário:</label>
+                            <input type="text" id="userUsername" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userPassword">Senha:</label>
+                            <input type="password" id="userPassword" name="password">
+                        </div>
+                        <div class="form-group">
+                            <label for="userRole">Papel:</label>
+                            <select id="userRole" name="role" required>
+                                <option value="employee">Funcionário</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <button type="button" id="cancelUserBtn" class="btn btn-secondary">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="usersList" class="users-list"></div>
+            </div>
+
+            <!-- Aba de Metas Admin -->
+            <div id="adminGoalsTab" class="tab-content">
+                <div class="content-header">
+                    <h2>Gestão de Metas</h2>
+                    <button id="addGoalBtn" class="btn btn-primary">Nova Meta</button>
+                </div>
+                
+                <div id="goalForm" class="form-container hidden">
+                    <h3 id="goalFormTitle">Nova Meta</h3>
+                    <form id="goalFormElement">
+                        <input type="hidden" id="goalId">
+                        <div class="form-group">
+                            <label for="goalUser">Usuário (deixe vazio para meta coletiva):</label>
+                            <select id="goalUser" name="user_id">
+                                <option value="">Meta Coletiva</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="goalType">Tipo:</label>
+                            <select id="goalType" name="goal_type" required>
+                                <option value="daily">Diária</option>
+                                <option value="weekly">Semanal</option>
+                                <option value="monthly">Mensal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="goalTarget">Meta:</label>
+                            <input type="number" id="goalTarget" name="target_value" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="goalStartDate">Data Início:</label>
+                            <input type="date" id="goalStartDate" name="start_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="goalEndDate">Data Fim:</label>
+                            <input type="date" id="goalEndDate" name="end_date" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <button type="button" id="cancelGoalBtn" class="btn btn-secondary">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="goalsList" class="goals-list"></div>
+            </div>
+
+            <!-- Aba de Relatórios Admin -->
+            <div id="adminReportsTab" class="tab-content">
+                <h2>Relatórios Gerais</h2>
+                <div class="report-filters">
+                    <select id="adminReportPeriod">
+                        <option value="daily">Diário</option>
+                        <option value="weekly">Semanal</option>
+                        <option value="monthly">Mensal</option>
+                    </select>
+                    <select id="adminReportUser">
+                        <option value="">Todos os usuários</option>
+                    </select>
+                    <button id="generateAdminReportBtn" class="btn btn-primary">Gerar Relatório</button>
+                </div>
+                <div id="adminReportContent" class="report-content"></div>
+            </div>
+
+            <!-- Aba de Ranking -->
+            <div id="rankingTab" class="tab-content">
+                <h2>Ranking de Funcionários</h2>
+                <div id="rankingContent" class="ranking-content"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
